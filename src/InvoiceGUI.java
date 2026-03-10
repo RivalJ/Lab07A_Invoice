@@ -2,11 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 public class InvoiceGUI extends JFrame {
     Invoice invoice;
-    List<LineItem> lineItems;
+    List<LineItem> lineItems = new ArrayList<>();
     Customer customer;
 
     JPanel mainPanel, lineItemInput, customerInput;
@@ -38,19 +39,26 @@ public class InvoiceGUI extends JFrame {
 
         //panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        SetUpTextField("Name", name, customerInput);
-        SetUpTextField("Street Address", streetAddress, customerInput);
-        SetUpTextField("City", city, customerInput);
-        SetUpTextField("State", state, customerInput);
-        SetUpTextField("Country", country, customerInput);
-        SetUpTextField("Zip Code", zipcode, customerInput);
-        SetUpTextField("Item Name", itemName, lineItemInput);
-        SetUpTextField("Item Price", itemPrice, lineItemInput);
-        SetUpTextField("Item Quantity", itemQuantity, lineItemInput);
+        name = SetUpTextField("Name", name, customerInput);
+        streetAddress = SetUpTextField("Street Address", streetAddress, customerInput);
+        city = SetUpTextField("City", city, customerInput);
+        state = SetUpTextField("State", state, customerInput);
+        country = SetUpTextField("Country", country, customerInput);
+        zipcode = SetUpTextField("Zip Code", zipcode, customerInput);
+        itemName = SetUpTextField("Item Name", itemName, lineItemInput);
+        itemPrice = SetUpTextField("Item Price", itemPrice, lineItemInput);
+        itemQuantity = SetUpTextField("Item Quantity", itemQuantity, lineItemInput);
 
         addLineItem = new JButton("Add Line Item");
         addCustomer = new JButton("Add Customer");
         generateInvoice = new JButton("Generate Invoice");
+        addLineItem.addActionListener(new ButtonListener());
+        addCustomer.addActionListener(new ButtonListener());
+        generateInvoice.addActionListener(new ButtonListener());
+
+        mainPanel.add(addLineItem);
+        mainPanel.add(addCustomer);
+        mainPanel.add(generateInvoice);
 
         customerInput.setBorder(BorderFactory.createTitledBorder("Customer Information: "));
         lineItemInput.setBorder(BorderFactory.createTitledBorder("Line Item Information: "));
@@ -70,21 +78,20 @@ public class InvoiceGUI extends JFrame {
      * @param field the actual text field that will be used to store the text
      * @param panel the target panel that we want the text field to be stored in
      */
-    private void SetUpTextField(String labelText, JTextField field, JPanel panel){
+    private JTextField SetUpTextField(String labelText, JTextField field, JPanel panel){
         JPanel fieldPanel = new JPanel();
 
         fieldPanel.setLayout(new BorderLayout());
 
         JLabel label = new JLabel(labelText + ": ");
-        if(field == null){
-            field = new JTextField();
-        }
+        field = new JTextField();
         field.setPreferredSize(new Dimension(200, 20));
         fieldPanel.add(label, BorderLayout.WEST);
         fieldPanel.add(field, BorderLayout.EAST);
 
 
         panel.add(fieldPanel);
+        return field;
     }
 
     private class ButtonListener implements ActionListener {
@@ -100,6 +107,7 @@ public class InvoiceGUI extends JFrame {
                                 )
                         )
                 );
+                System.out.println(lineItems);
             }
             else if(e.getSource() == addCustomer){
                 customer = new Customer(
@@ -110,9 +118,13 @@ public class InvoiceGUI extends JFrame {
                         country.getText(),
                         zipcode.getText()
                 );
+                System.out.println(customer);
             }
             else if(e.getSource() == generateInvoice){
-
+                if(customer != null && lineItems.size() > 0){
+                    invoice = new Invoice(customer, lineItems);
+                    System.out.println(invoice);
+                }
             }
         }
     }
