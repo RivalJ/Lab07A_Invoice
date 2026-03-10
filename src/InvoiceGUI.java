@@ -14,6 +14,7 @@ public class InvoiceGUI extends JFrame {
     JTextField name, streetAddress, city, state, country, zipcode;
     JTextField itemQuantity, itemName, itemPrice;
     JButton addLineItem, addCustomer, generateInvoice;
+    JTextArea invoiceTextArea;
 
 
     public InvoiceGUI() {
@@ -36,6 +37,7 @@ public class InvoiceGUI extends JFrame {
         mainPanel = new JPanel();
         customerInput = new JPanel();
         lineItemInput = new JPanel();
+        invoiceTextArea = new JTextArea();
 
         //panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
@@ -66,8 +68,12 @@ public class InvoiceGUI extends JFrame {
         customerInput.setLayout(new BoxLayout(customerInput, BoxLayout.Y_AXIS));
         lineItemInput.setLayout(new BoxLayout(lineItemInput, BoxLayout.Y_AXIS));
 
+        invoiceTextArea.setEditable(false);
+        invoiceTextArea.setPreferredSize(new Dimension(300, 200));
+
         mainPanel.add(customerInput);
         mainPanel.add(lineItemInput);
+        mainPanel.add(new JScrollPane(invoiceTextArea));
 
         super.add(mainPanel);
     }
@@ -124,6 +130,7 @@ public class InvoiceGUI extends JFrame {
                 if(customer != null && lineItems.size() > 0){
                     invoice = new Invoice(customer, lineItems);
                     System.out.println(invoice);
+                    invoice.PrintInvoice(invoiceTextArea);
                 }
             }
         }
